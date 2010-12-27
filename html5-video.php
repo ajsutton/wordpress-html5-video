@@ -17,6 +17,7 @@ function html5Video_expandVideo($attrs) {
 		'poster' => plugins_url('poster.png', __FILE__)
 	), $attrs));
 	$src = home_url($src);
+	$poster = home_url($poster);
 	$html = '<script>VideoJS.setupAllWhenReady();</script>';
 	$html = $html . <<<END
 <div class="video-js-box tube-css">
