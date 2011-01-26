@@ -17,29 +17,38 @@ function html5Video_expandVideo($attrs) {
 		'ogg' => '',
 		'width' => '640',
 		'height' => '360',
-		'preload' => 'auto',
-		'autoplay' => false,
+		'preload' => true,
+		'autoplay' => "false",
 		'poster' => plugins_url('poster.png', __FILE__)
 	), $attrs));
-	$src = home_url($src);
 	$sourceElements = "";
 	if ($src != '') {
-		$sourceElements .= '<source src="' . $src + . '" type="' . $type . '" />\n';
-	}
-	if ($mp4 != '') {
-		$sourceElements .= '<source src="' . $mp4 + . '" type=\'video/mp4; codecs="avc1.42E01E, mp4a.40.2"\' />\n';
+		$src = html5Video_absurl($src);
+		$sourceElements = $sourceElements . "<source src='$src' type='$type' />\n";
+	} else if ($mp4 != '') {
+		$mp4 = html5Video_absurl($mp4);
+		$src = $mp4;
+		$sourceElements = $sourceElements . "<source src='$mp4' type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"' />\n";
 	}
 	if ($webm != '') {
-		$sourceElements .= '<source src="' . $webm + . '" type=\'video/webm; codecs="vp8, vorbis"\' />\n';
+		$webm = html5Video_absurl($webm);
+		$sourceElements = $sourceElements . "<source src='$webm' type='video/webm; codecs=\"vp8, vorbis\"' />\n";
 	}
 	if ($ogg != '') {
-		$sourceElements .= '<source src="' . $ogg + . '" type=\'video/ogg; codecs="theora, vorbis"\' />\n';
+		$ogg = html5Video_absurl($ogg);
+		$sourceElements = $sourceElements . "<source src='$ogg' type='video/ogg; codecs=\"theora, vorbis\"' />\n";
 	}
-	$poster = home_url($poster);
+	if ($autoplay != "false") {
+		$autoplayAttr = "autoplay=true";
+	}
+	if ($preload) {
+		$preloadAttr = "preload=true";
+	}
+	$poster = html5Video_absurl($poster);
 	$html = '<script>VideoJS.setupAllWhenReady();</script>';
 	$html = $html . <<<END
 <div class="video-js-box tube-css">
-    <video class="video-js" width="$width" height="$height" controls="controls" autoplay="$autoplay" preload="$preload" poster="$poster">
+    <video class="video-js" width="$width" height="$height" controls="controls" $autoplayAttr $preloadAttr poster="$poster">
       $sourceElements
       <object class="vjs-flash-fallback" width="$width" height="$height" type="application/x-shockwave-flash"
         data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
@@ -59,6 +68,13 @@ END;
 	return $html;
 }
 
+function html5Video_absurl($url) {
+	if (strpos($url, ':') < 0) {
+		return home_url($url);
+	} else {
+		return $url;
+	}
+}
 add_shortcode('video', 'html5Video_expandVideo');
 wp_enqueue_script('video-js', plugins_url( '/video-js/video.js', __FILE__));
 wp_enqueue_style('video-js', plugins_url('/video-js/video-js.css', __FILE__));
