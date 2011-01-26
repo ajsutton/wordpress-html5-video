@@ -11,23 +11,41 @@
 function html5Video_expandVideo($attrs) {
 	extract(shortcode_atts(array(
 		'src' => '',
-		'type' => 'video/mp4',
+		'type' => 'video/mp4; codecs="avc1.42E01E, mp4a.40.2',
+		'mp4' => '',
+		'webm' => '',
+		'ogg' => '',
 		'width' => '640',
 		'height' => '360',
+		'preload' => 'auto',
+		'autoplay' => false,
 		'poster' => plugins_url('poster.png', __FILE__)
 	), $attrs));
 	$src = home_url($src);
+	$sourceElements = "";
+	if ($src != '') {
+		$sourceElements .= '<source src="' . $src + . '" type="' . $type . '" />\n';
+	}
+	if ($mp4 != '') {
+		$sourceElements .= '<source src="' . $mp4 + . '" type=\'video/mp4; codecs="avc1.42E01E, mp4a.40.2"\' />\n';
+	}
+	if ($webm != '') {
+		$sourceElements .= '<source src="' . $webm + . '" type=\'video/webm; codecs="vp8, vorbis"\' />\n';
+	}
+	if ($ogg != '') {
+		$sourceElements .= '<source src="' . $ogg + . '" type=\'video/ogg; codecs="theora, vorbis"\' />\n';
+	}
 	$poster = home_url($poster);
 	$html = '<script>VideoJS.setupAllWhenReady();</script>';
 	$html = $html . <<<END
 <div class="video-js-box tube-css">
-    <video class="video-js" width="$width" height="$height" controls="controls" preload="auto" poster="$poster">
-      <source src="$src" type="$type" />
+    <video class="video-js" width="$width" height="$height" controls="controls" autoplay="$autoplay" preload="$preload" poster="$poster">
+      $sourceElements
       <object class="vjs-flash-fallback" width="$width" height="$height" type="application/x-shockwave-flash"
         data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
         <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
         <param name="allowfullscreen" value="true" />
-        <param name="flashvars" value='config={"playlist":["$poster", {"url": "$src","autoPlay":false,"autoBuffering":true}]}' />
+        <param name="flashvars" value='config={"playlist":["$poster", {"url": "$src","autoPlay":$autoplay,"autoBuffering":true}]}' />
         <!-- Image Fallback. Typically the same as the poster image. -->
         <img src="$poster" width="$width" height="$height" alt="Poster Image"
           title="No video playback capabilities." />
