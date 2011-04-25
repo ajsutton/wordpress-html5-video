@@ -78,7 +78,7 @@ END;
 }
 
 function html5Video_absurl($url) {
-	if (strpos($url, ':') < 0) {
+	if (strpos($url, ":") === FALSE) {
 		return home_url($url);
 	} else {
 		return $url;
