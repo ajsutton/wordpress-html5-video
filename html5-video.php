@@ -22,7 +22,7 @@ function html5Video_expandVideo($attrs) {
 		'poster' => plugins_url('poster.png', __FILE__)
 	), $attrs));
 	$sourceElements = "";
-	var chromeSupport = false;
+	$chromeSupport = false;
 	if ($src != '') {
 		$src = html5Video_absurl($src);
 		$sourceElements = $sourceElements . "<source src='$src' type='$type' />\n";
@@ -32,12 +32,12 @@ function html5Video_expandVideo($attrs) {
 		$sourceElements = $sourceElements . "<source src='$mp4' type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"' />\n";
 	}
 	if ($webm != '') {
-		chromeSupport = true;
+		$chromeSupport = true;
 		$webm = html5Video_absurl($webm);
 		$sourceElements = $sourceElements . "<source src='$webm' type='video/webm; codecs=\"vp8, vorbis\"' />\n";
 	}
 	if ($ogg != '') {
-		chromeSupport = true;
+		$chromeSupport = true;
 		$ogg = html5Video_absurl($ogg);
 		$sourceElements = $sourceElements . "<source src='$ogg' type='video/ogg; codecs=\"theora, vorbis\"' />\n";
 	}
@@ -59,7 +59,7 @@ function html5Video_expandVideo($attrs) {
           title="No video playback capabilities." />
       </object>
 END;
-	if (!chromeSupport && is_chrome()) {
+	if (!$chromeSupport && is_chrome()) {
 		$html = $html . $flash;
 	} else {
 		$html = $html . <<<END
